@@ -34,16 +34,21 @@ const BASE_URL = (process.env.USER === 'user')
   : settings.publicUrl
 const FACEBOOK_SHARE_URL = 'https://www.facebook.com/sharer/sharer.php?u='
 
-// show index for everybody,
-// show shared page for the bot
+// show sharing page for the facebook bot
+// redirect to index everybody else
 app.get('/', function (request, response) {
   if (
-    request.query != null
-    && request.query.result != null
-    && request.headers['user-agent'] != null
-    && request.headers['user-agent'].indexOf('facebook') >= 0
-  ) {
-    return response.render('share', getSharePageProps(request.query.result))
+      request.query != null
+      && request.query.result != null
+    ) {
+    if (
+      request.headers['user-agent'] != null
+      && request.headers['user-agent'].indexOf('facebook') >= 0
+    ) {
+      return response.render('share', getSharePageProps(request.query.result))
+    } else {
+      return response.redirect('/')
+    }
   }
   return response.render('index', getMainPageProps())
 })
