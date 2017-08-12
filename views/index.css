@@ -1,0 +1,85 @@
+body, html {
+  position: fixed;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  cursor: crosshair;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+#canvas {
+  width: 100%;
+  height: 100%;
+  background-color: black;
+}
+
+#rectangle {
+  width: 0;
+  height: 0;
+  background-color: white;
+  position: absolute;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 200ms;
+}
+
+#shareme {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  /*border-bottom: 2px solid transparent;
+  transition: border 200ms;*/
+}
+
+svg {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  position: relative;
+  top: 2px;
+  left: 5px;
+}
+
+svg path {
+  transition: fill 200ms;
+}
+
+#rectangle:hover {
+  background-color: #ccc;
+  /*background-color: #3b5998;*/
+  /*border-bottom: 2px solid black;*/
+}
+
+#rectangle:hover svg .blue {
+  fill: black !important;
+}
+
+#rectangle:hover svg .white {
+  /*fill: #3b5998 !important;*/
+  fill: #ccc !important;
+}
+
+#hint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  z-index: 1000;
+  pointer-events: none;
+  transition: opacity 300ms;
+}
+
+#hint.hidden {
+  opacity: 0;
+}
