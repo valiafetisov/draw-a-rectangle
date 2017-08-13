@@ -74,7 +74,7 @@ function getMainPageProps () {
   return {
     imageUrl: BASE_URL + '/images/index.png',
     pageUrl: BASE_URL,
-    pageTitle: settings.pageTitle,
+    pageTitle: settings.indexPageTitle,
     pageDescription: settings.pageDescription,
     imageWidth: 1080,
     imageHeight: 556,
@@ -87,7 +87,7 @@ function getSharePageProps (id) {
   return {
     imageUrl: imageUrl,
     pageUrl: BASE_URL + '/?result=' + id,
-    pageTitle: settings.pageTitle,
+    pageTitle: settings.sharePageTitle,
     pageDescription: settings.pageDescription,
     imageWidth: CANVAS_WIDTH,
     imageHeight: CANVAS_HEIGHT,
