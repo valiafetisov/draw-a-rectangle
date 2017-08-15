@@ -4,7 +4,7 @@
   "author": "valia fetisov",
   "scripts": {
     "start": "nodemon --ignore 'images/*' --ignore 'pages.db' app.js",
-    "deploy": "rsync -av --exclude 'node_modules' --exclude 'images' --exclude '*.db' . root@conformity.io:/opt/rectangle/"
+    "deploy": "rsync -av --exclude 'node_modules' --exclude 'images' --exclude '*.db' . root@rectangle.conformity.io:/opt/rectangle/"
   },
   "dependencies": {
     "express": "^4.15.4",
