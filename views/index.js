@@ -1,123 +1,101 @@
-window.onload = function () {
-  var canvas = document.getElementById('canvas')
-  var rectangle = document.getElementById('rectangle')
+var canvas = document.getElementById('canvas')
+var rectangle = document.getElementById('rectangle')
+var hint = document.getElementById('hint')
+var startPosition = {}
+var currentPosition = {}
+var isDrawing = false
+var lastUpdatedAt = 0
 
-  function setMousePosition (e) {
-    var ev = e || window.event; //Moz || IE
-    if (e.targetTouches) ev = e.targetTouches[0]
-    if (ev.pageX) { //Moz
-      mouse.x = ev.pageX + window.pageXOffset;
-      mouse.y = ev.pageY + window.pageYOffset;
-    } else if (ev.clientX) { //IE
-      mouse.x = ev.clientX + document.body.scrollLeft;
-      mouse.y = ev.clientY + document.body.scrollTop;
-    }
-    mouse.updatedAt = Date.now()
-  };
+canvas.addEventListener('mousedown', onStart)
+canvas.addEventListener('touchstart', onStart)
+canvas.addEventListener('mousemove', onMove)
+canvas.addEventListener('touchmove', onMove)
+canvas.addEventListener('mouseup', onStop)
+canvas.addEventListener('touchend', onStop)
+rectangle.addEventListener('mouseup', onStop)
+rectangle.addEventListener('click', onClickShare)
 
-  var mouse = {
-    x: 0,
-    y: 0,
-    startX: 0,
-    startY: 0
-  };
-  var element = null;
-
-  function move (e) {
-    if (element == null) return;
-    setMousePosition(e);
-    var position = getRelativePosition(mouse)
-    element.style.top = position.top + '%';
-    element.style.left = position.left + '%';
-    element.style.width = position.width + '%';
-    element.style.height = position.height + '%';
-  }
-
-  canvas.addEventListener('mousemove', move)
-  canvas.addEventListener('touchmove', move)
-
-  function checkForId (element, id) {
-    if (element.id === id) return true
-    if (element.parentNode) {
-      return checkForId(element.parentNode, id)
-    }
-    return false
-  }
-
-  function getRelativePosition () {
+function getCurrentPosition (e) {
+  lastUpdatedAt = Date.now()
+  var ev = e || window.event
+  if (e.targetTouches) ev = e.targetTouches[0]
+  if (ev.pageX) {
     return {
-      top: (mouse.y - mouse.startY < 0)
-        ? mouse.y / window.innerHeight * 100
-        : mouse.startY / window.innerHeight * 100,
-      left: (mouse.x - mouse.startX < 0)
-        ? mouse.x / window.innerWidth * 100
-        : mouse.startX / window.innerWidth * 100,
-      width: Math.abs(mouse.x - mouse.startX) / window.innerWidth * 100,
-      height: Math.abs(mouse.y - mouse.startY) / window.innerHeight * 100
+      x: ev.pageX + window.pageXOffset,
+      y: ev.pageY + window.pageYOffset
+    }
+  } else if (ev.clientX) {
+    return {
+      x: ev.clientX + document.body.scrollLeft,
+      y: ev.clientY + document.body.scrollTop
     }
   }
-
-  function serialize (params) {
-    var str = '';
-    if (!params) return str
-    for (var key in params) {
-      if (str != '') {
-        str += '&';
-      }
-      str += key + '=' + encodeURIComponent(params[key]);
-    }
-    return str;
-  }
-
-  function share () {
-    // alert('shared: ' + JSON.stringify(getRelativePosition(mouse)));
-    var url = window.location + 'redirect?' + serialize(getRelativePosition(mouse));
-    window.open(url, '', 'width=500,height=300');
-  }
-
-  function hideHint () {
-    document.getElementById('hint').className = 'hidden'
-  }
-  function showHint () {
-    document.getElementById('hint').className = ''
-  }
-
-  function open (e) {
-    // if (checkForId(e.target, 'rectangle')) {
-    e.stopPropagation()
-    share()
-    // }
-  }
-
-  function start (e) {
-    hideHint()
-    setMousePosition(e);
-    mouse.startX = mouse.x;
-    mouse.startY = mouse.y;
-    element = document.getElementById('rectangle');
-    var position = getRelativePosition(mouse)
-    element.style.top = position.top + '%';
-    element.style.left = position.left + '%';
-    element.style.width = 0;
-    element.style.height = 0;
-  }
-  function stop (e) {
-    element = null;
-  }
-
-  rectangle.addEventListener('click', open)
-  rectangle.addEventListener('mouseup', stop)
-  canvas.addEventListener('mousedown', start)
-  canvas.addEventListener('touchstart', start)
-  canvas.addEventListener('mouseup', stop)
-  canvas.addEventListener('touchend', stop)
-
-  setInterval(function () {
-    var now = Date.now()
-    if (now - mouse.updatedAt < 500) return
-    if (
-      Math.abs(mouse.x - mouse.startX) < 1 ||
-      Math.abs(mouse.y - mouse.startY) < 1
-    ) showHint()
-  }, 1000)
 }
+
+function onStart (e) {
+  hint.className = 'hidden'
+  isDrawing = true
+  startPosition = getCurrentPosition(e)
+  currentPosition = getCurrentPosition(e)
+  draw()
+}
+
+function onMove (e) {
+  if (isDrawing !== true) return
+  currentPosition = getCurrentPosition(e)
+  draw()
+}
+
+function draw () {
+  var rectanglePosition = getRectanglePosition()
+  rectangle.style.top = rectanglePosition.top + 'px'
+  rectangle.style.left = rectanglePosition.left + 'px'
+  rectangle.style.width = rectanglePosition.width + 'px'
+  rectangle.style.height = rectanglePosition.height + 'px'
+}
+
+function getRectanglePosition () {
+  return {
+    top: (startPosition.y - currentPosition.y < 0)
+      ? startPosition.y
+      : currentPosition.y,
+    left: (startPosition.x - currentPosition.x < 0)
+      ? startPosition.x
+      : currentPosition.x,
+    width: Math.abs(startPosition.x - currentPosition.x),
+    height: Math.abs(startPosition.y - currentPosition.y)
+  }
+}
+
+function onStop (e) {
+  isDrawing = false
+}
+
+function onClickShare (e) {
+  e.stopPropagation()
+  var rectanglePosition = getRectanglePosition()
+  rectanglePosition.windowWidth = window.innerWidth
+  rectanglePosition.windowHeight = window.innerHeight
+  var url = window.location + 'popup?' + serialize(rectanglePosition)
+  window.open(url, '', 'width=550,height=400')
+}
+
+function serialize (params) {
+  var str = ''
+  if (!params) return str
+  for (var key in params) {
+    if (str != '') {
+      str += '&'
+    }
+    str += key + '=' + encodeURIComponent(params[key])
+  }
+  return str
+}
+
+setInterval(function () {
+  if (Date.now() - lastUpdatedAt < 500) return
+  if (
+    Math.abs(startPosition.x - currentPosition.x) < 1 ||
+    Math.abs(startPosition.y - currentPosition.y) < 1
+  ) hint.className = ''
+}, 500)

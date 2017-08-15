@@ -7,8 +7,8 @@
     "deploy": "rsync -av --exclude 'node_modules' --exclude 'images' --exclude '*.db' . root@conformity.io:/opt/rectangle/"
   },
   "dependencies": {
-    "canvas": "^1.6.6",
     "express": "^4.15.4",
+    "gm": "^1.23.0",
     "nedb": "^1.8.0",
     "pug": "^2.0.0-rc.3"
   },

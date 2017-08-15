@@ -12,6 +12,7 @@ html
         width: 100%;
       }
       .img {
+        display: block;
         height: 100%;
         width: 100%;
         background-size: contain;
@@ -19,7 +20,7 @@ html
         background-position: center;
       }
 
-    script.
+    //- script.
       window.onload = function () {
         setTimeout(function () {
           window.location.href = 'http://' + window.location.host.toString()
@@ -28,4 +29,4 @@ html
 
   body
 
-    .img(style='background-image: url("' + imageUrl + '")')
+    a.img(style='background-image: url("' + imageUrl + '")' href='/')
