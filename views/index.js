@@ -99,3 +99,6 @@ setInterval(function () {
     Math.abs(startPosition.y - currentPosition.y) < 1
   ) hint.className = ''
 }, 500)
+
+document.getElementsByTagName('HTML')[0].style.height = window.innerHeight
+document.getElementsByTagName('BODY')[0].style.height = window.innerHeight
