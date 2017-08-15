@@ -60,16 +60,16 @@ app.get('/popup', function (request, response) {
 // open share page
 app.get('/share/:pageId', function (request, response) {
   if (!request.params.pageId) return response.send('no pageId')
-  if (
-    request.headers['user-agent'].indexOf('bot') >= 0 ||
-    request.headers['user-agent'].indexOf('facebook') >= 0 ||
-    request.headers['user-agent'].indexOf('twitter') >= 0 ||
-    request.headers['user-agent'].indexOf('vkontakte') >= 0
-  ) {
-    return response.render('share', getSharePageProps(request.params.pageId))
-  } else {
-    return response.redirect('/')
-  }
+  // if (
+  //   request.headers['user-agent'].indexOf('bot') >= 0 ||
+  //   request.headers['user-agent'].indexOf('facebook') >= 0 ||
+  //   request.headers['user-agent'].indexOf('twitter') >= 0 ||
+  //   request.headers['user-agent'].indexOf('vkontakte') >= 0
+  // ) {
+  return response.render('share', getSharePageProps(request.params.pageId))
+  // } else {
+  //   return response.redirect('/')
+  // }
 })
 
 // redirect all other routes to the main page
@@ -128,7 +128,7 @@ function getSharePageProps (id) {
   const imageUrl = BASE_URL + '/images/' + id + '.png'
   return {
     imageUrl: imageUrl,
-    pageUrl: BASE_URL + '/?result=' + id,
+    pageUrl: BASE_URL + '/share/' + id,
     pageTitle: settings.sharePageTitle,
     pageDescription: settings.pageDescription,
     imageWidth: IMAGE_WIDTH,
