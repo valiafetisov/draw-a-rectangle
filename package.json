@@ -2,6 +2,7 @@
   "name": "rectangle",
   "version": "0.0.1",
   "author": "valia fetisov",
+  "main": "app.js",
   "scripts": {
     "start": "nodemon --ignore 'images/*' --ignore 'pages.db' app.js",
     "deploy": "rsync -av --exclude 'node_modules' --exclude 'images' --exclude '*.db' . root@rectangle.conformity.io:/opt/rectangle/"
