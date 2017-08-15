@@ -144,18 +144,21 @@ function createOrFindPage (rectanglePosition, headers, callback) {
   // search by those coordinates if this image already exists
   pages.findOne(rectangleImageCoordinates).exec(function (error, found) {
     if (error) return callback(error)
+    const now = Date.now()
 
     // create object with client information
     const client = {
-      headers: headers,
-      request: rectanglePosition
+      originalSizes: rectanglePosition,
+      userIp: headers['x-forwarded-for'],
+      userAgent: headers['user-agent'],
+      timestamp: now
     }
 
     // if image exist, return it's id
     if (found) {
       pages.update({_id: found._id}, {
         $push: {clients: client},
-        $set: {updatedAt: Date.now()}
+        $set: {updatedAt: now}
       }, function (error, result) {
         if (error) console.error(error)
       })
@@ -164,7 +167,7 @@ function createOrFindPage (rectanglePosition, headers, callback) {
 
     // if not, create new one and generate image
     rectangleImageCoordinates.clients = [client]
-    rectangleImageCoordinates.createdAt = Date.now()
+    rectangleImageCoordinates.createdAt = now
     pages.insert(rectangleImageCoordinates, function (error, inserted) {
       if (error) return callback(error)
 
