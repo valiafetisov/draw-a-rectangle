@@ -20,12 +20,17 @@ html
         background-position: center;
       }
 
-    //- script.
+    script.
       window.onload = function () {
         setTimeout(function () {
           window.location.href = 'http://' + window.location.host.toString()
-        }, 1000)
+        }, 3000)
       }
+
+    script
+      |var gaClientId='#{gaClientId}';
+      if gaClientId
+        include ga.js
 
   body
 
